@@ -28,6 +28,7 @@ $bnhm_directory_museums = array(
 
 // Call the alphabetical directory listing using the print_bnhm_directory_alphabetical shortcode
 add_shortcode('print_bnhm_directory_alphabetical','bnhm_directory_alphabetical');
+add_shortcode('print_bnhm_directory_groupname','bnhm_directory_groupname');
 
 // Add a call to the plugin menu options from the admin menu (showing up under settings)
 add_action('admin_menu', 'bnhm_directory_plugin_menu' );
@@ -187,6 +188,86 @@ function bnhm_directory_alphabetical() {
     		echo "<td class='phone'><span itemprop='telephone'><a href='tel:+1".$real_phone."'>" . $formatted_phone . "</a></span></td>";
     		echo "<td align='left' class='email'><a href='mailto:" .$email . "'>" . $email ."</a></td>";
     		echo "</tr>";
+    		$cur++;
+  	} 
+  	echo "</table>";
+  
+  	echo "<p>";
+}
+// Display an alphabetical list of BNHM directory names
+function bnhm_directory_groupname() {
+    	global $bnhm_directory_museums;
+  	$db = getDB();
+
+  	// Display the header text
+  	echo get_option('bnhm_directory_header_text'); 
+  	$l_strSQL = "select * from (select concat_ws('',a.lastname,', ',a.firstname,' ',a.suffix) as name,";
+  	$l_strSQL .= " a.position as position,";
+  	$l_strSQL .= " replace(replace(a.email,'@','&#064;'),'.edu','&#046;&#069;&#068;&#085;') as email,";
+  	$l_strSQL .= " a.phone as phone,";
+  	$l_strSQL .= " a.url as url,";
+  	$l_strSQL .= " a.contact_reason as contact_reason,";
+  	$l_strSQL .= " g.description as groupname,";
+  	$l_strSQL .= " u.cal_login as museum";
+  	$l_strSQL .= " FROM webcal_affiliates a,webcal_affiliates_groups g,webcal_user u";
+  	$l_strSQL .= " WHERE (g.name!='Not_Active' AND g.description not like \"Former%\" AND g.name !='Alumni' AND g.name != 'Emeriti')";
+ 	// Don't want to display directors of BNHM-- use their institutional status
+  	$l_strSQL .= " and (u.cal_login != 'BNHM' and g.name != 'Directors')";
+  	$l_strSQL .= " and a.groupname = g.affiliates_groups_id";
+  	$l_strSQL .= " and g.cal_create_by= u.cal_login";
+  	$l_strSQL .= " and a.groupname != ''";
+  	$l_strSQL .= " and a.groupname is not null";
+	// BNHM option represents ALL museums, don't use this option
+	if (get_option('bnhm_directory_museum_name') != "BNHM") {
+		$l_strSQL .= " and u.cal_login = '" . get_option('bnhm_directory_museum_name') . "'";
+	}
+  	$l_strSQL .= " GROUP BY concat_ws('',a.lastname,', ',a.firstname,' ',a.suffix),u.cal_login) as t ";
+  	$l_strSQL .= " ORDER BY groupname";
+
+  	$res=mysqli_query($db,$l_strSQL);
+	mysqli_store_result($db);
+  	$cur = 1;
+  	$num=mysqli_num_rows($res);
+	$thisgroupname = '';
+  	while ($num >= $cur ) {
+
+    		$row=mysqli_fetch_array($res);
+
+		if ($row["groupname"] != '') {
+		if ($row["groupname"] != $thisgroupname) {
+			if ($cur > 1) {
+				echo "</table>";
+			}
+
+			echo "<h3>". $row['groupname'] . "</h3>";
+  			echo "<table width=100% border=0 cellpadding=3 cellspacing=0>";
+			$thisgroupname = $row["groupname"];
+		}
+
+    		$email = strtolower($row['email']);
+    		echo "<tr>";
+    
+    		#if (get_option('bnhm_directory_show_logos')) {
+    		#	echo "<td><img src='http://bnhmwp.berkeley.edu/bnhm2/wp-content/uploads/". $bnhm_directory_museums[$row['museum']] . "' width=100 border=0></td>";
+    		#}
+
+    		echo "<td align='left' class='name'><span>";
+    		if ($row['url'] != '') { echo "<a href='" . $row['url'] . "'>"; }
+    		echo  utf8_encode(trim($row['name'])) . "</span>";
+    		if ($row['url'] != '') { echo "</a>"; } 
+    		if ($row['position'] != '') { echo "<br/>" . $row['position']; }
+    		echo "</td>";
+
+    		$real_phone = preg_replace("/\D/","",$row['phone']);
+    		if(strlen($real_phone) == 7) $real_phone = "510".$real_phone;
+    		if(!empty($real_phone)) { 
+      			$formatted_phone = "(".substr($real_phone,0,3).") ".substr($real_phone,3,3)."-".substr($real_phone,6);
+    		}
+    		else $formatted_phone = "";
+    		echo "<td class='phone'><span itemprop='telephone'><a href='tel:+1".$real_phone."'>" . $formatted_phone . "</a></span></td>";
+    		echo "<td align='left' class='email'><a href='mailto:" .$email . "'>" . $email ."</a></td>";
+    		echo "</tr>";
+		}
     		$cur++;
   	} 
   	echo "</table>";
