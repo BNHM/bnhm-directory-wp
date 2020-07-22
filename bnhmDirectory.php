@@ -138,6 +138,7 @@ function bnhm_directory_alphabetical() {
   	echo "<table width=100% border=0 cellpadding=3 cellspacing=0>";
   	$l_strSQL = "select concat_ws('',a.lastname,', ',a.firstname,' ',a.suffix) as name,";
   	$l_strSQL .= " a.position as position,";
+  	$l_strSQL .= " a.interests as interests,";
   	$l_strSQL .= " replace(replace(a.email,'@','&#064;'),'.edu','&#046;&#069;&#068;&#085;') as email,";
   	$l_strSQL .= " a.phone as phone,";
   	$l_strSQL .= " a.url as url,";
@@ -176,6 +177,7 @@ function bnhm_directory_alphabetical() {
     		echo  utf8_encode(trim($row['name'])) . "</span>";
     		if ($row['url'] != '') { echo "</a>"; } 
     		if ($row['position'] != '') { echo "<br/>" . $row['position']; }
+    		if ($row['interests'] != '') { echo "<br/><i>" . $row['interests'] . "</i>"; }
     		echo "</td>";
 
     		echo "<td align='left' class='group'>" . $row['groupname'] . "</td>";
