@@ -6,7 +6,7 @@
 /*
 Plugin Name:  BNHM Directory
 Plugin URI: 
-Description: Display the contents of the BNHM People Directory
+Description: Display the contents of the BNHM People Directory and News Feed
 Author: John Deck
 Version: 0.7
 Author URI: 
