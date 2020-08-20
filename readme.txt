@@ -12,7 +12,10 @@ Individual museums can configure this plugin to display a list of names affiliat
 
 There is an administration panel that you need to configure after plugin installation.  Please see the BSCIT team for connection details.
 
-## Short Codes Available for Use 
-[bnhm_directory_groupname] Display all names and display group
+Short Codes Available for Use 
 
-[bnhm_directory_alphabetical]  Display all names alphabetically
+[print_bnhm_directory_groupname] Display all names and display group
+
+[print_bnhm_directory_alphabetical]  Display all names alphabetically
+
+[print_bnhm_news] Display news items

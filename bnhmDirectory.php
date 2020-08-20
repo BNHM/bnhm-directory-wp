@@ -26,9 +26,9 @@ $bnhm_directory_museums = array(
   "BNHM" => "sites/10/2015/06/bnhm_logo_150xbg.png"
 );
 
-// Call the alphabetical directory listing using the print_bnhm_directory_alphabetical shortcode
 add_shortcode('print_bnhm_directory_alphabetical','bnhm_directory_alphabetical');
 add_shortcode('print_bnhm_directory_groupname','bnhm_directory_groupname');
+add_shortcode('print_bnhm_news','bnhm_news');
 
 // Add a call to the plugin menu options from the admin menu (showing up under settings)
 add_action('admin_menu', 'bnhm_directory_plugin_menu' );
@@ -197,6 +197,46 @@ function bnhm_directory_alphabetical() {
   	$text .= "<p>";
 	return $text;
 }
+// Show News for all Users (limit to 25 results)
+function bnhm_news() {
+    	global $bnhm_directory_museums;
+  	$db = getDB();
+	$text = "";
+
+        $l_strSQL = "select cal_id,cal_title,cal_url,cal_description,cal_mod_date,cal_imageurl";
+        $l_strSQL .= " FROM webcal_entry";
+        $l_strSQL .= " WHERE cal_eventtype='news'";
+        $l_strSQL .= " AND cal_create_by='MVZ'";
+        $l_strSQL .= " ORDER by cal_mod_date DESC limit 2";
+
+  	$res=mysqli_query($db,$l_strSQL);
+	mysqli_store_result($db);
+  	$cur = 1;
+  	$num=mysqli_num_rows($res);
+
+        while ($num >= $cur) {
+    		$row=mysqli_fetch_array($res);
+                $l_intDate = strtotime($row['cal_mod_date']);
+                $text .= "<h5 class='clear'>";
+                $text .= "&nbsp;" . date("M d, Y",$l_intDate). "&nbsp;&nbsp;";
+                $text .= "</h5><span class='kindabig'>";
+                $text .= "<a class=\"linkstylequery\" href=\"" . $row['cal_url'] . "\">" . $row['cal_title'] . "</a>";
+                $text .= "</span>";
+
+                if ($row['cal_imageurl'] != "") {
+                        $text .= "<a href='" . $row['cal_imageurl'] . "' target='_blank'>";
+                        $text .= "<img src='" . $row['cal_imageurl'] . "' alt='Photo' class='photo' style='float:left; max-height:200px;' \>";
+                        $text .= "</a>";
+                }
+                $text .= "<p>" . nl2br($row['cal_description']);
+                $text .= "</p>";
+
+                $cur++;
+        }
+        $text .= "<hr />";
+	return $text;
+}
+
 // Display a list of names by group
 function bnhm_directory_groupname() {
     	global $bnhm_directory_museums;
