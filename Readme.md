@@ -17,4 +17,8 @@ There is an administration panel that you need to configure after plugin install
 
 [print_bnhm_directory_alphabetical]  Display all names alphabetically
 
-[print_bnhm_news] Display news items
+[print_bnhm_news] Display news items. Defaults to displaying 2 news items
+
+[print_bnhm_news limit="3"] Display three news items (input any number here to limit news items)
+
+[print_bnhm_news limit="all"] Display all news items for this museum

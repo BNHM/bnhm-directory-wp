@@ -198,7 +198,13 @@ function bnhm_directory_alphabetical() {
 	return $text;
 }
 // Show News for all Users (limit to 25 results)
-function bnhm_news() {
+function bnhm_news($atts = [], $content = null, $tag = '') {
+	$limit = 2;
+
+	if (isset($atts['limit'])) {
+		$limit = $atts['limit'];
+	}
+
     	global $bnhm_directory_museums;
   	$db = getDB();
 	$text = "";
@@ -207,7 +213,10 @@ function bnhm_news() {
         $l_strSQL .= " FROM webcal_entry";
         $l_strSQL .= " WHERE cal_eventtype='news'";
         $l_strSQL .= " AND cal_create_by='MVZ'";
-        $l_strSQL .= " ORDER by cal_mod_date DESC limit 2";
+        $l_strSQL .= " ORDER by cal_mod_date DESC";
+	if ($limit != "all") {
+        	$l_strSQL .= " limit " . $limit;
+	}
 
   	$res=mysqli_query($db,$l_strSQL);
 	mysqli_store_result($db);
