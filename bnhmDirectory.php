@@ -131,11 +131,11 @@ function getDB() {
 function bnhm_directory_alphabetical() {
     	global $bnhm_directory_museums;
   	$db = getDB();
-
+	$text = "";
   	// Display the header text
-  	echo get_option('bnhm_directory_header_text'); 
+  	$text .= get_option('bnhm_directory_header_text'); 
 
-  	echo "<table width=100% border=0 cellpadding=3 cellspacing=0>";
+  	$text .= "<table width=100% border=0 cellpadding=3 cellspacing=0>";
   	$l_strSQL = "select concat_ws('',a.lastname,', ',a.firstname,' ',a.suffix) as name,";
   	$l_strSQL .= " a.position as position,";
   	$l_strSQL .= " a.interests as interests,";
@@ -166,43 +166,45 @@ function bnhm_directory_alphabetical() {
   	while ($num >= $cur) {
     		$row=mysqli_fetch_array($res);
     		$email = strtolower($row['email']);
-    		echo "<tr>";
+    		$text .= "<tr>";
     
     		if (get_option('bnhm_directory_show_logos')) {
-    			echo "<td><img src='http://bnhmwp.berkeley.edu/bnhm2/wp-content/uploads/". $bnhm_directory_museums[$row['museum']] . "' width=100 border=0></td>";
+    			$text .= "<td><img src='http://bnhmwp.berkeley.edu/bnhm2/wp-content/uploads/". $bnhm_directory_museums[$row['museum']] . "' width=100 border=0></td>";
     		}
 
-    		echo "<td align='left' class='name'><span>";
-    		if ($row['url'] != '') { echo "<a href='" . $row['url'] . "'>"; }
-    		echo  utf8_encode(trim($row['name'])) . "</span>";
-    		if ($row['url'] != '') { echo "</a>"; } 
-    		if ($row['position'] != '') { echo "<br/>" . $row['position']; }
-    		if ($row['interests'] != '') { echo "<br/><i>" . $row['interests'] . "</i>"; }
-    		echo "</td>";
+    		$text .= "<td align='left' class='name'><span>";
+    		if ($row['url'] != '') { $text .= "<a href='" . $row['url'] . "'>"; }
+    		$text .= utf8_encode(trim($row['name'])) . "</span>";
+    		if ($row['url'] != '') { $text .= "</a>"; } 
+    		if ($row['position'] != '') { $text .= "<br/>" . $row['position']; }
+    		if ($row['interests'] != '') { $text .= "<br/><i>" . $row['interests'] . "</i>"; }
+    		$text .= "</td>";
 
-    		echo "<td align='left' class='group'>" . $row['groupname'] . "</td>";
+    		//echo "<td align='left' class='group'>" . $row['groupname'] . "</td>";
     		$real_phone = preg_replace("/\D/","",$row['phone']);
     		if(strlen($real_phone) == 7) $real_phone = "510".$real_phone;
     		if(!empty($real_phone)) { 
       			$formatted_phone = "(".substr($real_phone,0,3).") ".substr($real_phone,3,3)."-".substr($real_phone,6);
     		}
     		else $formatted_phone = "";
-    		echo "<td class='phone'><span itemprop='telephone'><a href='tel:+1".$real_phone."'>" . $formatted_phone . "</a></span></td>";
-    		echo "<td align='left' class='email'><a href='mailto:" .$email . "'>" . $email ."</a></td>";
-    		echo "</tr>";
+    		$text .= "<td class='phone'><span itemprop='telephone'><a href='tel:+1".$real_phone."'>" . $formatted_phone . "</a></span></td>";
+    		$text .= "<td align='left' class='email'><a href='mailto:" .$email . "'>" . $email ."</a></td>";
+    		$text .= "</tr>";
     		$cur++;
   	} 
-  	echo "</table>";
+  	$text .= "</table>";
   
-  	echo "<p>";
+  	$text .= "<p>";
+	return $text;
 }
-// Display an alphabetical list of BNHM directory names
+// Display a list of names by group
 function bnhm_directory_groupname() {
     	global $bnhm_directory_museums;
   	$db = getDB();
+	$text = "";
 
   	// Display the header text
-  	echo get_option('bnhm_directory_header_text'); 
+  	$text .= get_option('bnhm_directory_header_text'); 
   	$l_strSQL = "select * from (select concat_ws('',a.lastname,', ',a.firstname,' ',a.suffix) as name,";
   	$l_strSQL .= " a.position as position,";
   	$l_strSQL .= " replace(replace(a.email,'@','&#064;'),'.edu','&#046;&#069;&#068;&#085;') as email,";
@@ -238,27 +240,27 @@ function bnhm_directory_groupname() {
 		if ($row["groupname"] != '') {
 		if ($row["groupname"] != $thisgroupname) {
 			if ($cur > 1) {
-				echo "</table>";
+				$text .= "</table>";
 			}
 
-			echo "<h3>". $row['groupname'] . "</h3>";
-  			echo "<table width=100% border=0 cellpadding=3 cellspacing=0>";
+			$text .= "<h3>". $row['groupname'] . "</h3>";
+  			$text .= "<table width=100% border=0 cellpadding=3 cellspacing=0>";
 			$thisgroupname = $row["groupname"];
 		}
 
     		$email = strtolower($row['email']);
-    		echo "<tr>";
+    		$text .= "<tr>";
     
     		#if (get_option('bnhm_directory_show_logos')) {
     		#	echo "<td><img src='http://bnhmwp.berkeley.edu/bnhm2/wp-content/uploads/". $bnhm_directory_museums[$row['museum']] . "' width=100 border=0></td>";
     		#}
 
-    		echo "<td align='left' class='name'><span>";
-    		if ($row['url'] != '') { echo "<a href='" . $row['url'] . "'>"; }
-    		echo  utf8_encode(trim($row['name'])) . "</span>";
-    		if ($row['url'] != '') { echo "</a>"; } 
-    		if ($row['position'] != '') { echo "<br/>" . $row['position']; }
-    		echo "</td>";
+    		$text .= "<td align='left' class='name'><span>";
+    		if ($row['url'] != '') { $text .= "<a href='" . $row['url'] . "'>"; }
+    		$text .= utf8_encode(trim($row['name'])) . "</span>";
+    		if ($row['url'] != '') { $text .= "</a>"; } 
+    		if ($row['position'] != '') { $text .= "<br/>" . $row['position']; }
+    		$text .= "</td>";
 
     		$real_phone = preg_replace("/\D/","",$row['phone']);
     		if(strlen($real_phone) == 7) $real_phone = "510".$real_phone;
@@ -266,13 +268,14 @@ function bnhm_directory_groupname() {
       			$formatted_phone = "(".substr($real_phone,0,3).") ".substr($real_phone,3,3)."-".substr($real_phone,6);
     		}
     		else $formatted_phone = "";
-    		echo "<td class='phone'><span itemprop='telephone'><a href='tel:+1".$real_phone."'>" . $formatted_phone . "</a></span></td>";
-    		echo "<td align='left' class='email'><a href='mailto:" .$email . "'>" . $email ."</a></td>";
-    		echo "</tr>";
+    		$text .= "<td class='phone'><span itemprop='telephone'><a href='tel:+1".$real_phone."'>" . $formatted_phone . "</a></span></td>";
+    		$text .= "<td align='left' class='email'><a href='mailto:" .$email . "'>" . $email ."</a></td>";
+    		$text .= "</tr>";
 		}
     		$cur++;
   	} 
-  	echo "</table>";
+  	$text .= "</table>";
   
-  	echo "<p>";
+  	$text .= "<p>";
+	return $text;
 }

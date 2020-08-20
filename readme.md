@@ -11,3 +11,8 @@ The BNHM Directory plugin searches names from the BNHM directory (see the https:
 Individual museums can configure this plugin to display a list of names affiliated with their museum.
 
 There is an administration panel that you need to configure after plugin installation.  Please see the BSCIT team for connection details.
+
+## Short Codes Available for Use 
+[bnhm_directory_groupname] Display all names and display group
+
+[bnhm_directory_alphabetical]  Display all names alphabetically
