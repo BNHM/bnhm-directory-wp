@@ -24,3 +24,8 @@ There is an administration panel that you need to configure after plugin install
 [print_bnhm_news limit="3"] Display three news items (input any number here to limit news items)
 
 [print_bnhm_news limit="all"] Display all news items for this museum
+
+## Styling
+
+Names listing for alphabetical and groups have class = 'bnhm_dir'
+You can apply styling to that class to change look and feel
