@@ -15,7 +15,7 @@ There is an administration panel that you need to configure after plugin install
 
 [print_bnhm_directory_groupname] Display all names and display group
 
-[print_bnhm_directory_groupname groupname='Affiliated Faculty'] Display just one group
+[print_bnhm_directory_groupname groupname='Affiliated Faculty'] Display just one group (note that ampersands in group names should be replaced with 'and')
 
 [print_bnhm_directory_alphabetical]  Display all names alphabetically
 
