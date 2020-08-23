@@ -15,6 +15,8 @@ There is an administration panel that you need to configure after plugin install
 
 [print_bnhm_directory_groupname] Display all names and display group
 
+[print_bnhm_directory_groupname groupname='Affiliated Faculty'] Display just one group
+
 [print_bnhm_directory_alphabetical]  Display all names alphabetically
 
 [print_bnhm_news] Display news items. Defaults to displaying 2 news items

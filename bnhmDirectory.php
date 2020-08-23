@@ -246,11 +246,17 @@ function bnhm_news($atts = [], $content = null, $tag = '') {
 	return $text;
 }
 
-// Display a list of names by group
-function bnhm_directory_groupname() {
+
+
+function bnhm_directory_groupname($atts = [], $content = null, $tag = '') { 
+	$groupname = '';
     	global $bnhm_directory_museums;
   	$db = getDB();
 	$text = "";
+
+	if (isset($atts['groupname'])) {
+		$groupname = $atts['groupname'];
+	}
 
   	// Display the header text
   	$text .= get_option('bnhm_directory_header_text'); 
@@ -270,6 +276,9 @@ function bnhm_directory_groupname() {
   	$l_strSQL .= " and g.cal_create_by= u.cal_login";
   	$l_strSQL .= " and a.groupname != ''";
   	$l_strSQL .= " and a.groupname is not null";
+	if ($groupname != '') {
+  		$l_strSQL .= " and g.description like '" . $groupname ."'";
+	}
 	// BNHM option represents ALL museums, don't use this option
 	if (get_option('bnhm_directory_museum_name') != "BNHM") {
 		$l_strSQL .= " and u.cal_login = '" . get_option('bnhm_directory_museum_name') . "'";
@@ -282,6 +291,7 @@ function bnhm_directory_groupname() {
   	$cur = 1;
   	$num=mysqli_num_rows($res);
 	$thisgroupname = '';
+
   	while ($num >= $cur ) {
 
     		$row=mysqli_fetch_array($res);
