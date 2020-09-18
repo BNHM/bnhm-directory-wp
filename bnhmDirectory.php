@@ -135,7 +135,7 @@ function bnhm_directory_alphabetical() {
   	// Display the header text
   	$text .= get_option('bnhm_directory_header_text'); 
 
-  	$text .= "<table width=100% border=0 cellpadding=3 cellspacing=0>";
+  	$text .= "<table class='bnhm_dir'>";
   	$l_strSQL = "select concat_ws('',a.lastname,', ',a.firstname,' ',a.suffix) as name,";
   	$l_strSQL .= " a.position as position,";
   	$l_strSQL .= " a.interests as interests,";
@@ -146,7 +146,8 @@ function bnhm_directory_alphabetical() {
   	$l_strSQL .= " g.description as groupname,";
   	$l_strSQL .= " u.cal_login as museum";
   	$l_strSQL .= " FROM webcal_affiliates a,webcal_affiliates_groups g,webcal_user u";
-  	$l_strSQL .= " WHERE (g.name!='Not_Active' AND g.description not like \"Former%\" AND g.name !='Alumni' AND g.name != 'Emeriti')";
+  	//$l_strSQL .= " WHERE (g.name!='Not_Active' AND g.description not like \"Former%\" AND g.name !='Alumni' AND g.name != 'Emeriti')";
+  	$l_strSQL .= " WHERE (g.name!='Not_Active' AND g.description not like \"Former%\" AND g.name !='Alumni')";
  	// Don't want to display directors of BNHM-- use their institutional status
   	$l_strSQL .= " and (u.cal_login != 'BNHM' and g.name != 'Directors')";
   	$l_strSQL .= " and a.groupname = g.affiliates_groups_id";
@@ -269,7 +270,8 @@ function bnhm_directory_groupname($atts = [], $content = null, $tag = '') {
   	$l_strSQL .= " g.description as groupname,";
   	$l_strSQL .= " u.cal_login as museum";
   	$l_strSQL .= " FROM webcal_affiliates a,webcal_affiliates_groups g,webcal_user u";
-  	$l_strSQL .= " WHERE (g.name!='Not_Active' AND g.description not like \"Former%\" AND g.name !='Alumni' AND g.name != 'Emeriti')";
+  	//$l_strSQL .= " WHERE (g.name!='Not_Active' AND g.description not like \"Former%\" AND g.name !='Alumni' AND g.name != 'Emeriti')";
+  	$l_strSQL .= " WHERE (g.name!='Not_Active')";
  	// Don't want to display directors of BNHM-- use their institutional status
   	$l_strSQL .= " and (u.cal_login != 'BNHM' and g.name != 'Directors')";
   	$l_strSQL .= " and a.groupname = g.affiliates_groups_id";
@@ -286,7 +288,9 @@ function bnhm_directory_groupname($atts = [], $content = null, $tag = '') {
   	$l_strSQL .= " GROUP BY concat_ws('',a.lastname,', ',a.firstname,' ',a.suffix),u.cal_login) as t ";
   	$l_strSQL .= " ORDER BY groupname";
 
+	//print $l_strSQL;
   	$res=mysqli_query($db,$l_strSQL);
+
 	mysqli_store_result($db);
   	$cur = 1;
   	$num=mysqli_num_rows($res);
@@ -303,7 +307,7 @@ function bnhm_directory_groupname($atts = [], $content = null, $tag = '') {
 			}
 
 			$text .= "<h3>". $row['groupname'] . "</h3>";
-  			$text .= "<table width=100% border=0 cellpadding=3 cellspacing=0>";
+  			$text .= "<table class='bnhm_dir'>";
 			$thisgroupname = $row["groupname"];
 		}
 
